@@ -1,16 +1,18 @@
-# Eksperimen Preprocessing Data Asuransi
+# Analisis Data Biaya Asuransi Kesehatan
 
-## Untuk Apa Proyek Ini?
+## Tujuan Analisis
 
-Singkatnya, notebook ini adalah **tahap persiapan data sebelum membuat model machine learning**. Dataset biaya asuransi kesehatan dianalisis untuk memahami pola datanya, kemudian dibersihkan dan diubah ke format numerik agar siap digunakan pada model regresi untuk memprediksi `charges` atau biaya asuransi berdasarkan karakteristik peserta.
+Analisis ini bertujuan memahami faktor-faktor yang berkaitan dengan biaya asuransi kesehatan (`charges`). Dataset dieksplorasi untuk menemukan pola distribusi biaya, melihat perbedaan biaya antar kelompok peserta, serta menilai kualitas data sebelum digunakan dalam analisis lanjutan atau pemodelan regresi.
 
-Notebook ini belum membuat model prediksi final. Fokusnya adalah:
+Dalam peran sebagai proses analisis data, notebook ini berfokus pada:
 
-- memahami isi dan pola dataset melalui Exploratory Data Analysis (EDA),
-- memeriksa masalah data seperti duplikat, missing value, dan outlier,
-- mengubah data kategorikal menjadi angka,
-- menstandardisasi fitur, dan
-- menghasilkan file dataset yang siap digunakan pada tahap training.
+- memahami karakteristik peserta dan pola biaya melalui Exploratory Data Analysis (EDA),
+- memeriksa kualitas data, termasuk missing value, duplikat, dan outlier,
+- membandingkan biaya berdasarkan karakteristik demografis dan gaya hidup,
+- menyiapkan data dalam format numerik yang konsisten, dan
+- menghasilkan dataset yang dapat digunakan untuk analisis atau pemodelan berikutnya.
+
+Notebook ini belum menghasilkan model prediksi final. Kesimpulan yang disampaikan merupakan **insight deskriptif dan hasil pemeriksaan data**, bukan kesimpulan kausal atau ukuran akurasi prediksi.
 
 Dataset yang digunakan adalah **US Health Insurance Dataset** dari Kaggle. Dataset berisi 1.338 data individu dengan atribut:
 
@@ -22,7 +24,7 @@ Dataset yang digunakan adalah **US Health Insurance Dataset** dari Kaggle. Datas
 - `region`: wilayah tempat tinggal
 - `charges`: biaya asuransi sebagai target
 
-Notebook `preprocessing/Eksperimen_RizqiFathurrohman.ipynb` dan script `preprocessing/automate_RizqiFathurrohman.py` memiliki tujuan yang sama, yaitu membersihkan dan mengubah data mentah menjadi dataset numerik yang siap dipakai untuk training model.
+Notebook `preprocessing/Eksperimen_RizqiFathurrohman.ipynb` digunakan untuk eksplorasi dan dokumentasi analisis, sedangkan script `preprocessing/automate_RizqiFathurrohman.py` mengotomatisasi proses pembersihan dan transformasi data.
 
 ## Alur Analisis
 
@@ -38,43 +40,42 @@ Notebook `preprocessing/Eksperimen_RizqiFathurrohman.ipynb` dan script `preproce
 7. Fitur distandardisasi menggunakan `StandardScaler` sehingga setiap fitur memiliki skala yang sebanding.
 8. Hasil disimpan ke `preprocessing/insurance_preprocessing/insurance_preprocessed.csv`.
 
-## Analisis dan Temuan
+## Insight Analisis
 
-- Dataset awal tidak memiliki missing value pada seluruh tujuh kolom.
-- Nilai `charges` memiliki rentang yang lebar, dari sekitar 1.121,87 hingga 63.770,43. Median biaya sekitar 9.382,03, sedangkan rata-ratanya sekitar 13.270,42. Perbedaan ini menunjukkan distribusi target cenderung miring ke kanan dan memiliki nilai biaya tinggi.
-- Status merokok merupakan faktor yang terlihat paling menonjol dalam EDA. Kelompok perokok memiliki sebaran biaya yang jauh lebih tinggi dibandingkan kelompok bukan perokok.
-- `age` dan `bmi` dapat digunakan sebagai faktor numerik untuk menjelaskan variasi biaya. Korelasi antarfitur numerik perlu dibaca sebagai hubungan awal, bukan bukti sebab-akibat.
-- Fitur `sex` dan `region` tetap dipertahankan melalui encoding karena dapat memberikan informasi tambahan bagi model, walaupun pengaruhnya harus dibuktikan melalui evaluasi model.
-- Penyaringan IQR membuang sekitar 10,8% data setelah duplikat dihapus. Ini dapat mengurangi pengaruh nilai ekstrem, tetapi juga berisiko menghapus kasus biaya tinggi yang valid. Keputusan ini sebaiknya dibandingkan dengan eksperimen yang mempertahankan outlier atau hanya mentransformasi target.
-- Notebook mengimpor `LinearRegression`, `train_test_split`, `Pipeline`, dan metrik regresi, tetapi belum menjalankan pembagian data, training, prediksi, maupun evaluasi. Jadi, hasil proyek saat ini adalah **dataset hasil preprocessing**, bukan model prediksi yang sudah terbukti akurat.
+- Dataset awal tidak memiliki missing value pada seluruh tujuh kolom, sehingga tidak diperlukan imputasi.
+- `charges` memiliki rentang yang lebar, dari sekitar 1.121,87 hingga 63.770,43. Nilai rata-rata sekitar 13.270,42 lebih tinggi daripada median sekitar 9.382,03, yang menunjukkan distribusi biaya menceng ke kanan dan dipengaruhi oleh sebagian biaya yang sangat tinggi.
+- Perbedaan biaya antara perokok dan bukan perokok terlihat paling menonjol dalam EDA. Temuan ini menunjukkan bahwa status merokok merupakan variabel penting untuk dianalisis lebih lanjut ketika menjelaskan variasi biaya.
+- Usia dan BMI berpotensi membantu menjelaskan variasi biaya, sedangkan informasi jenis kelamin dan wilayah tetap dipertahankan untuk melihat apakah keduanya memberikan pola tambahan.
+- Satu baris duplikat dihapus, kemudian penyaringan IQR mengurangi data dari 1.337 menjadi 1.192 baris. Langkah ini mengurangi pengaruh nilai ekstrem, tetapi perlu dipertimbangkan kembali karena biaya tinggi dapat merupakan kasus nyata, bukan kesalahan pencatatan.
+- Korelasi yang ditampilkan merupakan hubungan statistik awal dan tidak dapat diartikan sebagai hubungan sebab-akibat. Untuk menyatakan pengaruh suatu faktor secara lebih kuat, diperlukan analisis lanjutan dan validasi model.
 
 ## Grafik EDA
 
-Grafik berikut adalah visualisasi yang dihasilkan dari notebook dan membantu menjelaskan alasan di balik preprocessing yang dilakukan.
+Grafik berikut adalah visualisasi yang digunakan untuk mendukung interpretasi karakteristik data dan menemukan pola awal.
 
 ### Distribusi Fitur Numerik
 
 ![Distribusi fitur numerik](preprocessing/figures/distribusi-numerik.png)
 
-Grafik ini menunjukkan distribusi `age`, `bmi`, `children`, dan `charges`. Distribusi `charges` yang memiliki ekor panjang membantu menjelaskan mengapa terdapat nilai biaya ekstrem dan mengapa outlier perlu diperiksa.
+Distribusi `charges` memiliki ekor panjang dibandingkan fitur numerik lainnya. Hal ini menunjukkan adanya variasi biaya yang besar dan menjadi alasan untuk memeriksa nilai ekstrem sebelum analisis lanjutan.
 
 ### Distribusi Fitur Kategorikal
 
 ![Distribusi fitur kategorikal](preprocessing/figures/distribusi-kategorikal.png)
 
-Grafik ini memperlihatkan jumlah data berdasarkan `sex`, `smoker`, dan `region`. Informasi ini berguna untuk memahami keseimbangan kategori sebelum melakukan one-hot encoding.
+Grafik ini memperlihatkan komposisi peserta berdasarkan jenis kelamin, status merokok, dan wilayah. Komposisi kategori penting diperhatikan agar perbandingan antar kelompok tidak dibaca tanpa mempertimbangkan jumlah observasinya.
 
 ### Biaya Berdasarkan Status Perokok
 
 ![Biaya berdasarkan status perokok](preprocessing/figures/biaya-berdasarkan-perokok.png)
 
-Perbandingan ini menunjukkan perbedaan sebaran `charges` antara perokok dan bukan perokok. Status `smoker` tampak sebagai salah satu pembeda biaya yang paling kuat dalam analisis awal.
+Perbandingan ini menunjukkan bahwa sebaran `charges` pada perokok cenderung jauh lebih tinggi daripada bukan perokok. Ini merupakan insight utama dari analisis deskriptif, tetapi belum membuktikan bahwa status merokok adalah satu-satunya penyebab perbedaan biaya.
 
 ### Korelasi Fitur Numerik
 
 ![Korelasi fitur numerik](preprocessing/figures/korelasi-fitur-numerik.png)
 
-Heatmap ini menunjukkan hubungan linear antarfitur numerik. Korelasi membantu eksplorasi awal, tetapi tidak cukup untuk menyimpulkan hubungan sebab-akibat.
+Heatmap ini menunjukkan hubungan linear antarfitur numerik. Visualisasi ini membantu mengidentifikasi pola hubungan awal, tetapi tidak cukup untuk menyimpulkan hubungan sebab-akibat.
 
 ## Output
 
@@ -87,11 +88,11 @@ region_northwest,region_southeast,region_southwest,charges
 
 Delapan kolom fitur sudah distandardisasi. Kolom `charges` tetap berada pada nilai asli agar dapat digunakan sebagai target regresi dan dibandingkan langsung dengan nilai biaya sebenarnya.
 
-## Kesimpulan
+## Kesimpulan Analisis
 
-Notebook ini digunakan untuk melakukan EDA dan preprocessing dataset biaya asuransi kesehatan. Prosesnya berhasil menghasilkan data yang lebih bersih, bebas missing value, tanpa duplikat, telah disaring dari outlier berdasarkan IQR, dan seluruh fitur kategorikal telah diubah menjadi bentuk numerik. File output siap digunakan untuk tahap pemodelan regresi, misalnya memprediksi biaya asuransi berdasarkan usia, BMI, jumlah anak, status merokok, jenis kelamin, dan wilayah.
+Berdasarkan analisis deskriptif, biaya asuransi pada dataset memiliki variasi yang besar dan distribusi yang menceng ke kanan. Status merokok menjadi pembeda paling jelas dalam sebaran biaya, sementara usia, BMI, jumlah anak, jenis kelamin, dan wilayah dapat digunakan sebagai variabel pendukung untuk analisis yang lebih komprehensif.
 
-Namun, notebook belum menjawab seberapa baik biaya tersebut dapat diprediksi karena belum ada proses training dan evaluasi model. Tahap lanjutan yang paling relevan adalah membagi data menjadi train/test, melatih model regresi, mengukur MAE atau RMSE dan `R²`, lalu membandingkan hasil dengan dan tanpa penghapusan outlier.
+Data telah diperiksa, dibersihkan, diubah ke format numerik, dan distandardisasi sehingga siap digunakan pada tahap analisis lanjutan. Namun, notebook belum melakukan training dan evaluasi model, sehingga belum dapat digunakan untuk menyatakan seberapa akurat biaya asuransi dapat diprediksi. Tahap berikutnya adalah membangun model regresi, mengukur MAE atau RMSE dan `R²`, serta membandingkan hasil dengan dan tanpa penghapusan outlier.
 
 ## Menjalankan Preprocessing
 
