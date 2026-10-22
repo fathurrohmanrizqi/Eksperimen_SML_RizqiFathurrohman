@@ -43,7 +43,7 @@ Notebook `preprocessing/Eksperimen_RizqiFathurrohman.ipynb` digunakan untuk eksp
 ## Insight Analisis
 
 - Dataset awal tidak memiliki missing value pada seluruh tujuh kolom, sehingga tidak diperlukan imputasi.
-- `charges` memiliki rentang yang lebar, dari sekitar 1.121,87 hingga 63.770,43. Nilai rata-rata sekitar 13.270,42 lebih tinggi daripada median sekitar 9.382,03, yang menunjukkan distribusi biaya menceng ke kanan dan dipengaruhi oleh sebagian biaya yang sangat tinggi.
+- `charges` memiliki rentang yang lebar, dari sekitar 1.121,87 hingga 63.770,43. Nilai rata-rata sekitar 13.270,42 lebih tinggi daripada median sekitar 9.382,03. Hal ini menunjukkan bahwa sebagian besar peserta memiliki biaya rendah hingga menengah, tetapi terdapat beberapa peserta dengan biaya yang sangat tinggi.
 - Perbedaan biaya antara perokok dan bukan perokok terlihat paling menonjol dalam EDA. Temuan ini menunjukkan bahwa status merokok merupakan variabel penting untuk dianalisis lebih lanjut ketika menjelaskan variasi biaya.
 - Usia dan BMI berpotensi membantu menjelaskan variasi biaya, sedangkan informasi jenis kelamin dan wilayah tetap dipertahankan untuk melihat apakah keduanya memberikan pola tambahan.
 - Satu baris duplikat dihapus, kemudian penyaringan IQR mengurangi data dari 1.337 menjadi 1.192 baris. Langkah ini mengurangi pengaruh nilai ekstrem, tetapi perlu dipertimbangkan kembali karena biaya tinggi dapat merupakan kasus nyata, bukan kesalahan pencatatan.
@@ -104,7 +104,7 @@ Hasil tersebut tidak berarti outlier selalu lebih baik atau selalu harus diperta
 
 ## Kesimpulan Analisis
 
-Berdasarkan analisis deskriptif, biaya asuransi pada dataset memiliki variasi yang besar dan distribusi yang menceng ke kanan. Status merokok menjadi pembeda paling jelas dalam sebaran biaya, sementara usia, BMI, jumlah anak, jenis kelamin, dan wilayah dapat digunakan sebagai variabel pendukung untuk analisis yang lebih komprehensif.
+Berdasarkan analisis deskriptif, biaya asuransi pada dataset memiliki variasi yang besar. Sebagian besar peserta memiliki biaya rendah hingga menengah, tetapi terdapat beberapa peserta dengan biaya yang sangat tinggi. Status merokok menjadi pembeda paling jelas dalam sebaran biaya, sementara usia, BMI, jumlah anak, jenis kelamin, dan wilayah dapat digunakan sebagai variabel pendukung untuk analisis yang lebih komprehensif.
 
 Data telah diperiksa, dibersihkan, dan disiapkan untuk pemodelan. Eksperimen regresi linear menunjukkan bahwa model tanpa outlier menghasilkan MAE dan RMSE yang lebih rendah, sedangkan model dengan outlier menghasilkan R² yang lebih tinggi. Oleh karena itu, pemilihan skenario perlu disesuaikan dengan tujuan analisis: data tanpa outlier lebih baik untuk mengevaluasi prediksi pada pola data umum, sedangkan data dengan outlier lebih mampu merepresentasikan variasi biaya secara keseluruhan.
 
