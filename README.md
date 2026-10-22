@@ -12,7 +12,7 @@ Dalam peran sebagai proses analisis data, notebook ini berfokus pada:
 - menyiapkan data dalam format numerik yang konsisten, dan
 - menghasilkan dataset yang dapat digunakan untuk analisis atau pemodelan berikutnya.
 
-Notebook ini belum menghasilkan model prediksi final. Kesimpulan yang disampaikan merupakan **insight deskriptif dan hasil pemeriksaan data**, bukan kesimpulan kausal atau ukuran akurasi prediksi.
+Notebook ini sekarang juga memuat eksperimen awal `LinearRegression` dengan metrik MAE, RMSE, dan R². Hasilnya digunakan untuk membandingkan model pada data dengan outlier dan tanpa outlier, bukan sebagai model produksi final.
 
 Dataset yang digunakan adalah **US Health Insurance Dataset** dari Kaggle. Dataset berisi 1.338 data individu dengan atribut:
 
@@ -48,6 +48,7 @@ Notebook `preprocessing/Eksperimen_RizqiFathurrohman.ipynb` digunakan untuk eksp
 - Usia dan BMI berpotensi membantu menjelaskan variasi biaya, sedangkan informasi jenis kelamin dan wilayah tetap dipertahankan untuk melihat apakah keduanya memberikan pola tambahan.
 - Satu baris duplikat dihapus, kemudian penyaringan IQR mengurangi data dari 1.337 menjadi 1.192 baris. Langkah ini mengurangi pengaruh nilai ekstrem, tetapi perlu dipertimbangkan kembali karena biaya tinggi dapat merupakan kasus nyata, bukan kesalahan pencatatan.
 - Korelasi yang ditampilkan merupakan hubungan statistik awal dan tidak dapat diartikan sebagai hubungan sebab-akibat. Untuk menyatakan pengaruh suatu faktor secara lebih kuat, diperlukan analisis lanjutan dan validasi model.
+- Perbandingan model dilakukan menggunakan `LinearRegression`, dengan preprocessing di dalam `Pipeline` sehingga encoder dan scaler hanya dipelajari dari data training.
 
 ## Grafik EDA
 
@@ -88,11 +89,26 @@ region_northwest,region_southeast,region_southwest,charges
 
 Delapan kolom fitur sudah distandardisasi. Kolom `charges` tetap berada pada nilai asli agar dapat digunakan sebagai target regresi dan dibandingkan langsung dengan nilai biaya sebenarnya.
 
+## Hasil Evaluasi Model
+
+Model regresi linear diuji menggunakan pembagian data 80:20 dengan `random_state=42`. Hasil evaluasinya adalah:
+
+| Skenario | Jumlah Data | MAE | RMSE | R² |
+|---|---:|---:|---:|---:|
+| Dengan outlier | 1.337 | 4.177,046 | 5.956,343 | 0,807 |
+| Tanpa outlier | 1.192 | 2.752,138 | 4.827,747 | 0,600 |
+
+Pada data tanpa outlier, MAE dan RMSE lebih rendah. Artinya, rata-rata kesalahan prediksi dan kesalahan besar model lebih kecil pada subset data yang sudah disaring. Namun, nilai R² lebih tinggi pada data dengan outlier, yaitu 0,807 dibandingkan 0,600. Dalam eksperimen ini, model dengan outlier mampu menjelaskan proporsi variasi `charges` yang lebih besar.
+
+Hasil tersebut tidak berarti outlier selalu lebih baik atau selalu harus dipertahankan. Kedua skenario memiliki jumlah data dan baris data uji yang berbeda, sehingga metriknya tidak sepenuhnya dibandingkan pada observasi yang sama. Selain itu, sebagian nilai biaya tinggi dapat merupakan kasus asuransi yang valid. Untuk perbandingan yang lebih kuat, eksperimen berikutnya dapat menggunakan data uji yang sama, cross-validation, dan analisis khusus terhadap kemampuan model memprediksi biaya tinggi.
+
 ## Kesimpulan Analisis
 
 Berdasarkan analisis deskriptif, biaya asuransi pada dataset memiliki variasi yang besar dan distribusi yang menceng ke kanan. Status merokok menjadi pembeda paling jelas dalam sebaran biaya, sementara usia, BMI, jumlah anak, jenis kelamin, dan wilayah dapat digunakan sebagai variabel pendukung untuk analisis yang lebih komprehensif.
 
-Data telah diperiksa, dibersihkan, diubah ke format numerik, dan distandardisasi sehingga siap digunakan pada tahap analisis lanjutan. Namun, notebook belum melakukan training dan evaluasi model, sehingga belum dapat digunakan untuk menyatakan seberapa akurat biaya asuransi dapat diprediksi. Tahap berikutnya adalah membangun model regresi, mengukur MAE atau RMSE dan `R²`, serta membandingkan hasil dengan dan tanpa penghapusan outlier.
+Data telah diperiksa, dibersihkan, dan disiapkan untuk pemodelan. Eksperimen regresi linear menunjukkan bahwa model tanpa outlier menghasilkan MAE dan RMSE yang lebih rendah, sedangkan model dengan outlier menghasilkan R² yang lebih tinggi. Oleh karena itu, pemilihan skenario perlu disesuaikan dengan tujuan analisis: data tanpa outlier lebih baik untuk mengevaluasi prediksi pada pola data umum, sedangkan data dengan outlier lebih mampu merepresentasikan variasi biaya secara keseluruhan.
+
+Kesimpulan ini masih merupakan hasil eksperimen awal pada satu pembagian train-test. Model belum dapat dianggap sebagai model produksi sebelum diuji dengan cross-validation, dibandingkan dengan algoritma regresi lain, dan dievaluasi secara khusus pada kasus dengan biaya asuransi tinggi.
 
 ## Menjalankan Preprocessing
 
